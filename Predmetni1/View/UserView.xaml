@@ -1,0 +1,157 @@
+﻿<UserControl x:Class="Predmetni1.View.UserView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Predmetni1.View"
+             xmlns:vml="clr-namespace:Predmetni1.VML"
+             xmlns:viewModel="clr-namespace:Predmetni1.ModelView"
+             xmlns:data="clr-namespace:Predmetni1.Model"
+
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.DataContext>
+        <viewModel:UserViewModel/>
+    </UserControl.DataContext>
+    <UserControl.Background>
+        <ImageBrush ImageSource="C:\Users\Jelena\Desktop\Blok5\back.jpg"></ImageBrush>
+    </UserControl.Background>
+    <UserControl.Resources>
+        <DataTemplate DataType="{x:Type data:Picture}">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="{Binding Path=Title, Mode=OneWay}"
+                           FontSize="16"
+                           TextWrapping="Wrap"/>
+                <TextBlock Text="{Binding Path=Description, Mode=OneWay}"
+                           TextWrapping="Wrap"/>
+                <TextBlock Text="{Binding Path=ImagePath, Mode=OneWay}"
+                           TextWrapping="Wrap"/>
+            </StackPanel>
+        </DataTemplate>
+    </UserControl.Resources>
+    <Grid>
+
+        <Grid Grid.Row="0">
+            <StackPanel Orientation="Vertical">
+                <ListView ItemsSource="{Binding ImageList}"
+                          ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                          ScrollViewer.VerticalScrollBarVisibility="Auto" Height="30" Margin="40,300,200,80"/>
+            </StackPanel>
+        </Grid>
+        <TabControl  SelectedIndex="{Binding SelectedIndex}">
+            <TabControl.Resources>
+                <Style TargetType="TabItem">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="TabItem">
+                                <Grid Name="Panel">
+                                    <ContentPresenter x:Name="ContentSite"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Center"
+                                        ContentSource="Header"
+                                        Margin="10,2" RenderTransformOrigin="0.812,5.1"/>
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter TargetName="Panel" Property="Background" Value="LightSkyBlue" />
+                                    </Trigger>
+
+                                </ControlTemplate.Triggers>
+
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+                <Style x:Key="ButtonStyle" TargetType="Button">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type Button}">
+                                <Grid>
+                                    <Ellipse Fill="White"
+                             Stroke="White"/>
+                                    <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </TabControl.Resources>
+
+            <TabItem FontStyle="Italic" Header="My Image" FontSize="15">
+                <Canvas>
+                    <ListView ItemsSource="{Binding ImageList}" Height="292" Canvas.Left="72" Canvas.Top="39" Width="181" >
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <Image Source="{Binding ImagePath}" Width="160" Height="100"/>
+                                    <TextBlock Text="Title:"/>
+                                    <TextBlock Text="{Binding Title}"/>
+                                    <TextBlock Text="Description:"/>
+                                    <TextBlock Text="{Binding Description}"/>
+                                    <TextBlock Text="DateTime:"/>
+                                    <TextBlock Text="{Binding DateTime}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <Button Height="20" Width="100" Content="Show Images" Background="BurlyWood" Command="{Binding LoadAllImagesCommand}" Canvas.Left="109" Canvas.Top="336" />
+
+                </Canvas>
+
+            </TabItem>
+
+            <TabItem FontStyle="Italic" Header="Add Image" FontSize="15">
+                <ContentControl>
+                    <Canvas>
+                        <Label Canvas.Left="148" Canvas.Top="154" RenderTransformOrigin="0.326,0.433">Image Title:
+                        </Label>
+                        <TextBox Name="imageTitile" Canvas.Left="264" Text="{Binding CurrentPicture.Title}" Canvas.Top="156" Height="28" Width="160"/>
+                        <TextBlock Text="{Binding CurrentPicture.ValidationErrors[Title]}"
+                               Foreground="Red" Height="23" Canvas.Left="264" Canvas.Top="189" Width="163"/>
+                        <Label Canvas.Left="103" Canvas.Top="217" RenderTransformOrigin="1.198,3.933">Image Description:
+                        </Label>
+                        <TextBox Name="imageDescription" Canvas.Left="264" Text="{Binding CurrentPicture.Description}" Canvas.Top="217" Height="88" Width="160"/>
+
+                        <GroupBox Grid.Row="0"  Canvas.Left="264" Canvas.Top="10" Height="117" Width="160">
+                            <Image  Stretch="Fill" Source="{Binding CurrentPicture.ImagePath}"/>
+
+                        </GroupBox>
+                        <TextBlock Text="{Binding CurrentPicture.ValidationErrors[ImagePath]}"
+                               Foreground="Red" Height="29" Canvas.Left="264" Canvas.Top="127" Width="163"/>
+                        <Button Height="46"  Style="{StaticResource ButtonStyle}" Grid.Row="1"  Command="{Binding LoadImageCommand}" Canvas.Top="81" Canvas.Left="362" Width="62"  >
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="C:\Users\Jelena\Desktop\Blok5\plus.jpg"/>
+
+                            </StackPanel>
+                        </Button>
+                        <Button Content="Save Image" Background="BurlyWood" Command="{Binding SaveImageCommand}" Height="42" Width="96" RenderTransformOrigin="0.375,0.5" Canvas.Left="300" Canvas.Top="310">
+
+                        </Button>
+                    </Canvas>
+                </ContentControl>
+            </TabItem>
+
+            <TabItem FontStyle="Italic" Header="Account Details"  FontSize="15">
+                <Grid>
+                    <ContentControl>
+                        <Canvas>
+                            <TextBlock FontSize="20" Margin="94,65,531,302" Text=" New Username:"/>
+                            <Label FontSize="20" Content="New Password:" Canvas.Left="94" Canvas.Top="139" Width="142"/>
+                            <TextBox FontSize="20"  Text="{Binding UpdateUser.Name}" Canvas.Left="299" Canvas.Top="65" Width="160"/>
+                            <TextBlock Text="{Binding UpdateUser.ValidationErrors[Name]}"
+                               Foreground="Red" Margin="299,146,343,221"/>
+                            <TextBox FontSize="20" Name="txtPassword" Text="{Binding UpdateUser.Password}" Canvas.Left="299" Canvas.Top="139" Width="160"/>
+                            <TextBlock Text="{Binding UpdateUser.ValidationErrors[Password]}"
+                               Foreground="Red" Margin="299,243,343,135" RenderTransformOrigin="0.497,0.454"/>
+                            <Button Content="Update" Background="BurlyWood" Height="27" FontStyle="Italic" HorizontalAlignment="Left" 
+                VerticalAlignment="Top" Width="91"
+                Command="{Binding UpdateCommand}" Canvas.Left="329" Canvas.Top="223"  />
+                        </Canvas>
+                    </ContentControl>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+    </Grid>
+</UserControl>
